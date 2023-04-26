@@ -4,8 +4,8 @@ float Vout;
 float Vin1;
 float Vout1; 
 float R1 = 2963; 
-float R2 = 29960; 
-float R3 = 21500;
+float R2 = 21500; 
+float R3 = 29960;
 float R4 = 2963;
 int rawValue;
 int rawValue1; 
@@ -18,19 +18,20 @@ void task1(void* parameters) {
     vTaskDelay(500 / portTICK_PERIOD_MS);
     Vout = rawValue * (3.3 / 4096.0);
     Vin = Vout * ((R1 + R2) / R1);
-    Vin=Vin+1;
+    Vin = Vin+1;
+    Serial.println( Vin);
     if (Vin > 23) {
       digitalWrite(13, HIGH);
       digitalWrite(15, HIGH);
-      Serial.printf("1,%f,%s", Vin, "HIGH");
+      Serial.println("HIGH");
     } else if (Vin > 19.5 && Vin <= 23) {
       digitalWrite(13, HIGH);
       digitalWrite(15, LOW);
-      Serial.printf("1,%f,%s",Vin,"HIGH LOW");
+      Serial.println("HIGH LOW");
     } else {
       digitalWrite(13, LOW);
       digitalWrite(15, LOW);
-      Serial.printf("1,%f,%s",Vin,"LOW");
+      Serial.println("LOW");
     }
     vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
@@ -43,21 +44,21 @@ void task2(void* parameters) {
     vTaskDelay(500 / portTICK_PERIOD_MS);
     Vout1 = rawValue1 * (3.3 / 4096.0);
     Vin1 = Vout1 * ((R3 + R4) / R4);
-    Vin1=Vin1+4;
+    Vin1 = Vin1+4;
     Serial.println(Vin1);
     
     if (Vin1 > 23) {
       digitalWrite(13, HIGH);
       digitalWrite(15, HIGH);
-       Serial.printf("2,%f,%s",Vin1,"HIGH");
+       Serial.println("HIGH");
     } else if (Vin1 > 19.5 && Vin1 <= 23) {
       digitalWrite(13, HIGH);
       digitalWrite(15, LOW);
-      Serial.printf("2,%f,%s",Vin1,"HIGHLOW");
+      Serial.println("HIGHLOW");
     } else {
       digitalWrite(13, LOW);
       digitalWrite(15, LOW);
-      Serial.printf("2,%f,%s",Vin1,"LOW");
+      Serial.println("LOW");
     }
     vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
