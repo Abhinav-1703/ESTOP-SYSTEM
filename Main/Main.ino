@@ -18,21 +18,7 @@ void task1(void* parameters) {
     vTaskDelay(500 / portTICK_PERIOD_MS);
     Vout = rawValue * (3.3 / 4096.0);
     Vin = Vout * ((R1 + R2) / R1);
-    Vin = Vin+1;
     Serial.println( Vin);
-    if (Vin > 23) {
-      digitalWrite(13, HIGH);
-      digitalWrite(15, HIGH);
-      Serial.println("HIGH");
-    } else if (Vin > 19.5 && Vin <= 23) {
-      digitalWrite(13, HIGH);
-      digitalWrite(15, LOW);
-      Serial.println("HIGH LOW");
-    } else {
-      digitalWrite(13, LOW);
-      digitalWrite(15, LOW);
-      Serial.println("LOW");
-    }
     vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
 }
@@ -44,7 +30,6 @@ void task2(void* parameters) {
     vTaskDelay(500 / portTICK_PERIOD_MS);
     Vout1 = rawValue1 * (3.3 / 4096.0);
     Vin1 = Vout1 * ((R3 + R4) / R4);
-    Vin1 = Vin1+4;
     Serial.println(Vin1);
     
     if (Vin1 > 23) {
