@@ -1,5 +1,5 @@
 const int ledpin1 = 13;
-const int touchPin = 16; 
+const int touchPin = 14; 
 const int ledPin = 15;
 
 // change with your threshold value
