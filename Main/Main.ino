@@ -13,6 +13,17 @@ struct {
   int sensorValue1;
   int sensorValue2;
 } aStruct;
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+#define ONE_WIRE_BUS 15
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
+
+DeviceAddress sensor1 = {};
+DeviceAddress sensor2 = {};
+DeviceAddress sensor3 = {};
+DeviceAddress sensor4 = {};
 
 int ch3Value;
 char buffer[40];
@@ -91,6 +102,26 @@ static void conditionalThingy(void*) { //lets say I wanna print data from both s
   }
 }
 
+void tasktemp(void* parameters) {
+  for (;;) {
+    sensors.requestTemperatures(); 
+  
+    Serial.print("Sensor 1(*C): ");
+    Serial.print(sensors.getTempC(sensor1)); 
+ 
+    Serial.print("Sensor 2(*C): ");
+    Serial.print(sensors.getTempC(sensor2)); 
+  
+    Serial.print("Sensor 3(*C): ");
+    Serial.print(sensors.getTempC(sensor3)); 
+
+    Serial.print("Sensor 4(*C): ");
+    Serial.print(sensors.getTempC(sensor4));
+ 
+  
+    delay(1000);
+}}
+
 void setup() {
   pinMode(13,OUTPUT);
   pinMode(15,OUTPUT);
@@ -99,6 +130,7 @@ void setup() {
   digitalWrite(LED_BUILTIN, LOW);
   delay(5000);
   Serial.begin(9600);
+   sensors.begin();
   xTaskCreate(
     task1,
     "task 1",
@@ -139,6 +171,13 @@ void setup() {
     1,
     NULL
    ); 
+    xTaskCreate(
+    tasktemp,
+    "tasktemp",
+    1000,
+    NULL,
+    2,
+    NULL);
   Serial.println("setup(): starting scheduler...");
   Serial.flush(); 
   vTaskStartScheduler();
