@@ -1,15 +1,28 @@
 #include <TridentTD_EasyFreeRTOS32.h>
-
-
-// defining all variables to store values for sensors
+float Vin; 
+float Vout;
+float Vin1;
+float Vout1; 
+float R1 = 2963; 
+float R2 = 21500; 
+float R3 = 29960;
+float R4 = 2963;
+int rawValue;
+int rawValue1; 
 struct {
   int sensorValue1;
   int sensorValue2;
 } aStruct;
 
 int ch3Value;
-
-char buffer[40]; // used to print all variables in one line
+char buffer[40];
+void setup() {
+  pinMode(13,OUTPUT);
+  pinMode(15,OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(12, INPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(5000);
 
 static void readSensor1(void*) { // lets say sensor 1. generating random values for now, analog read already done
   while (true) {
@@ -50,13 +63,12 @@ static void conditionalThingy(void*) { //lets say I wanna print data from both s
 
 void setup() {
   Serial.begin(9600);
+   pinMode(13,OUTPUT);
+  pinMode(15,OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(12, INPUT);
   digitalWrite(LED_BUILTIN, LOW);
-
   delay(5000);
-
-  Serial.println("\r\nRunning FreeRTOS kernel " tskKERNEL_VERSION_NUMBER ". Built by gcc " __VERSION__ ".");
 
   xTaskCreate(readSensor1, "readSensor1", 128, nullptr, 2, nullptr);
   xTaskCreate(wirelessEStop, "wirelessEStop", 128, nullptr, 2, nullptr);
@@ -68,4 +80,29 @@ void setup() {
   vTaskStartScheduler();
 }
 
-void loop() {}
+void loop() {
+    Vout = rawValue * (3.3 / 4096.0);
+    Vin = Vout * ((R1 + R2) / R1);
+    Serial.println( Vin);
+    delay(1000);
+
+    rawValue1 = analogRead(4);
+    Vout1 = rawValue1 * (3.3 / 4096.0);
+    Vin1 = Vout1 * ((R3 + R4) / R4);
+    Serial.println(Vin1);
+    
+    if (Vin1 > 23) {
+      digitalWrite(13, HIGH);
+      digitalWrite(15, HIGH);
+  
+    } else if (Vin1 > 19.5 && Vin1 <= 23) {
+      digitalWrite(13, HIGH);
+      digitalWrite(15, LOW);
+    
+    } else {
+      digitalWrite(13, LOW);
+      digitalWrite(15, LOW);
+      
+    }
+    delay(1000);
+    }
